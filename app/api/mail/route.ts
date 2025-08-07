@@ -49,30 +49,47 @@ export async function POST(req: Request) {
       const scriptUrl = process.env.GOOGLE_APPS_SCRIPT_URL
 
       if (!scriptUrl) {
-        throw new Error('스크립트 설정 오류')
+        console.error('GOOGLE_APPS_SCRIPT_URL 환경 변수가 설정되지 않았습니다.')
+        throw new Error('Google Apps Script URL이 설정되지 않았습니다.')
       }
 
-      // Google Apps Script에 데이터 전송 (email만 전송)
+      console.log('Google Apps Script URL:', scriptUrl)
+
+      // Google Apps Script에 데이터 전송
+      const requestData = { 
+        email,
+        timestamp: new Date().toLocaleString("ko-KR"),
+        type: "사전신청"
+      }
+
+      console.log('전송할 데이터:', requestData)
+
       const result = await fetch(scriptUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email,
-          timestamp: new Date().toLocaleString("ko-KR"),
-          type: "사전신청"
-        }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(requestData),
       })
+
+      console.log('Google Apps Script 응답 상태:', result.status)
+      console.log('Google Apps Script 응답 헤더:', Object.fromEntries(result.headers.entries()))
 
       if (!result.ok) {
         const errorText = await result.text()
+        console.error('Google Apps Script 오류 응답:', errorText)
         throw new Error(`Google Apps Script 요청 실패: ${result.status} - ${errorText}`)
       }
 
       const responseText = await result.text()
+      console.log('Google Apps Script 응답 텍스트:', responseText)
       
       try {
-        JSON.parse(responseText)
+        const responseData = JSON.parse(responseText)
+        console.log('Google Apps Script 응답 데이터:', responseData)
       } catch (parseError) {
+        console.error('Google Apps Script 응답 파싱 오류:', parseError)
         // HTML 응답인 경우 (Google Apps Script 오류 페이지)
         if (responseText.includes('<!DOCTYPE html>') || responseText.includes('TypeError')) {
           throw new Error('Google Apps Script 실행 오류 - 스프레드시트 연결을 확인해주세요')
@@ -81,7 +98,9 @@ export async function POST(req: Request) {
         throw new Error('Google Apps Script 응답 형식 오류')
       }
     } catch (sheetError) {
+      console.error('Google Sheet 저장 오류:', sheetError)
       // 시트 저장 실패는 전체 요청 실패로 처리하지 않음 (사용자는 이미 메일을 받았으므로)
+      // 하지만 로그는 남겨둠
     }
 
     return new Response(JSON.stringify({ success: true }), { status: 200 })

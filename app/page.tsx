@@ -376,17 +376,7 @@ export default function LandingPage() {
             )}
           </form>
           <div className="flex justify-center space-x-8 text-slate-400">
-            <a
-              href="#api"
-              className="hover:text-emerald-400 transition-colors flex items-center space-x-2"
-              onClick={e => {
-                e.preventDefault();
-                toast({ title: "준비중입니다", description: "빠른 시일 내에 제공될 예정입니다." });
-              }}
-            >
-              <FileText className="h-4 w-4" />
-              <span>API 문서</span>
-            </a>
+          
             <a href="#" className="hover:text-emerald-400 transition-colors flex items-center space-x-2">
               <Shield className="h-4 w-4" />
               <span>보안 정책</span>
