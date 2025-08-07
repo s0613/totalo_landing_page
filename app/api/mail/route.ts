@@ -73,8 +73,6 @@ export async function POST(req: Request) {
         body: JSON.stringify(requestData),
       })
 
-      console.log('Google Apps Script 응답 상태:', result.status)
-      console.log('Google Apps Script 응답 헤더:', Object.fromEntries(result.headers.entries()))
 
       if (!result.ok) {
         const errorText = await result.text()
@@ -83,11 +81,11 @@ export async function POST(req: Request) {
       }
 
       const responseText = await result.text()
-      console.log('Google Apps Script 응답 텍스트:', responseText)
+
       
       try {
         const responseData = JSON.parse(responseText)
-        console.log('Google Apps Script 응답 데이터:', responseData)
+  
       } catch (parseError) {
         console.error('Google Apps Script 응답 파싱 오류:', parseError)
         // HTML 응답인 경우 (Google Apps Script 오류 페이지)
