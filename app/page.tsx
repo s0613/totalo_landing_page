@@ -395,7 +395,7 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
               <img src="/logo.svg" alt="TotaloadCert" className="h-8 w-auto" />
-              <span className="text-slate-400">© 2024 TotaloadCert. All rights reserved.</span>
+              <span className="text-slate-400">© 2025 TotaloadCert. All rights reserved.</span>
             </div>
             <div className="flex space-x-6 text-slate-400">
               <a href="#" className="hover:text-white transition-colors">
